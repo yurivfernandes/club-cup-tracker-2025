@@ -1,9 +1,23 @@
-
 import React from 'react';
 import { Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFifaData } from "../hooks/useFifaData";
+import { MatchListOfDay } from "../components/MatchListOfDay";
+import { format } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 
 const Home = () => {
+  const { data, isLoading, error } = useFifaData();
+
+  // Data de hoje (no formato das partidas: 'dd/MM/yyyy')
+  const now = new Date();
+  const todayStr = format(now, "dd/MM/yyyy", { locale: ptBR });
+
+  // Filtra jogos do dia
+  const matchesToday = data?.matches.filter(
+    m => m.date === todayStr
+  ) || [];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
@@ -17,6 +31,18 @@ const Home = () => {
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           O maior torneio interclubes do mundo retorna com novo formato, reunindo os melhores clubes de todos os continentes nos Estados Unidos.
         </p>
+      </div>
+
+      {/* Jogos do dia */}
+      <div className="my-6">
+        <h2 className="text-2xl font-bold mb-2 text-gray-800 text-center">Jogos do Dia {format(now, "dd 'de' MMMM", { locale: ptBR })}</h2>
+        {isLoading ? (
+          <div className="text-center text-gray-500">Carregando jogos...</div>
+        ) : error ? (
+          <div className="text-center text-red-500">Erro ao carregar jogos.</div>
+        ) : (
+          <MatchListOfDay matches={matchesToday} dateStr={todayStr} />
+        )}
       </div>
 
       {/* Quick Stats */}
