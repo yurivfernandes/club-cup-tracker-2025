@@ -1,9 +1,9 @@
 name = "club-cup-tracker-2025"
 compatibility_date = "2024-03-20"
-type = "webpack"
-account_id = ""
-workers_dev = true
-route = ""
+
+[site]
+bucket = "./dist"
+pages_build_output_dir = "dist"
 zone_id = ""
 
 [site]
