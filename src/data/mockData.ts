@@ -105,6 +105,18 @@ export const mockGroups = [
 ];
 
 export const mockMatches: Match[] = [
+  // Partida de abertura (já finalizada, com resultado)
+  { 
+    id: 'OPEN1', 
+    homeTeam: 'Manchester City', 
+    awayTeam: 'Palmeiras', 
+    date: '14/06/2025', 
+    time: '21:00', 
+    venue: 'Maracanã', 
+    status: 'finished',
+    result: { home: 3, away: 1 }
+  },
+
   // Grupo A
   { id: 'A1', homeTeam: 'Manchester City', awayTeam: 'Al Hilal', date: '15/06/2025', time: '15:00', venue: 'MetLife Stadium', status: 'scheduled' },
   { id: 'A2', homeTeam: 'Palmeiras', awayTeam: 'Monterrey', date: '15/06/2025', time: '18:00', venue: 'Arrowhead Stadium', status: 'scheduled' },
@@ -119,23 +131,53 @@ export const mockMatches: Match[] = [
   { id: 'B3', homeTeam: 'Real Madrid', awayTeam: 'Seattle Sounders', date: '20/06/2025', time: '15:00', venue: 'Rose Bowl', status: 'scheduled' },
   { id: 'B4', homeTeam: 'Urawa Red Diamonds', awayTeam: 'Flamengo', date: '20/06/2025', time: '18:00', venue: 'Soldier Field', status: 'scheduled' },
   { id: 'B5', homeTeam: 'Seattle Sounders', awayTeam: 'Urawa Red Diamonds', date: '24/06/2025', time: '15:00', venue: 'Rose Bowl', status: 'scheduled' },
-  { id: 'B6', homeTeam: 'Flamengo', awayTeam: 'Real Madrid', date: '24/06/2025', time: '18:00', venue: 'Soldier Field', status: 'scheduled' }
-];
+  { id: 'B6', homeTeam: 'Flamengo', awayTeam: 'Real Madrid', date: '24/06/2025', time: '18:00', venue: 'Soldier Field', status: 'scheduled' },
 
-export const mockRanking: Team[] = [
-  { name: 'Manchester City', country: 'Inglaterra', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/gb-eng.png', ranking: 1, iffhsPoints: 371, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Real Madrid', country: 'Espanha', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/es.png', ranking: 2, iffhsPoints: 356, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Bayern Munich', country: 'Alemanha', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/de.png', ranking: 3, iffhsPoints: 342, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Paris Saint-Germain', country: 'França', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/fr.png', ranking: 4, iffhsPoints: 328, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Chelsea', country: 'Inglaterra', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/gb-eng.png', ranking: 5, iffhsPoints: 315, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Palmeiras', country: 'Brasil', confederation: 'CONMEBOL', flag: 'https://flagcdn.com/24x18/br.png', ranking: 6, iffhsPoints: 302, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Flamengo', country: 'Brasil', confederation: 'CONMEBOL', flag: 'https://flagcdn.com/24x18/br.png', ranking: 7, iffhsPoints: 289, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Juventus', country: 'Itália', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/it.png', ranking: 8, iffhsPoints: 276, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Manchester United', country: 'Inglaterra', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/gb-eng.png', ranking: 9, iffhsPoints: 263, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Barcelona', country: 'Espanha', confederation: 'UEFA', flag: 'https://flagcdn.com/24x18/es.png', ranking: 10, iffhsPoints: 250, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'River Plate', country: 'Argentina', confederation: 'CONMEBOL', flag: 'https://flagcdn.com/24x18/ar.png', ranking: 11, iffhsPoints: 237, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Boca Juniors', country: 'Argentina', confederation: 'CONMEBOL', flag: 'https://flagcdn.com/24x18/ar.png', ranking: 12, iffhsPoints: 224, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Al Hilal', country: 'Arábia Saudita', confederation: 'AFC', flag: 'https://flagcdn.com/24x18/sa.png', ranking: 13, iffhsPoints: 211, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Urawa Red Diamonds', country: 'Japão', confederation: 'AFC', flag: 'https://flagcdn.com/24x18/jp.png', ranking: 14, iffhsPoints: 198, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 },
-  { name: 'Al Ahly', country: 'Egito', confederation: 'CAF', flag: 'https://flagcdn.com/24x18/eg.png', ranking: 15, iffhsPoints: 185, points: 0, played: 0, won: 0, drawn: 0, lost: 0, goalsFor: 0, goalsAgainst: 0 }
+  // Grupo C
+  { id: 'C1', homeTeam: 'Chelsea', awayTeam: 'Al Ahly', date: '17/06/2025', time: '15:00', venue: 'Anfield', status: 'scheduled' },
+  { id: 'C2', homeTeam: 'River Plate', awayTeam: 'León', date: '17/06/2025', time: '18:00', venue: 'Estadio Monumental', status: 'scheduled' },
+  { id: 'C3', homeTeam: 'Chelsea', awayTeam: 'León', date: '21/06/2025', time: '15:00', venue: 'Anfield', status: 'scheduled' },
+  { id: 'C4', homeTeam: 'Al Ahly', awayTeam: 'River Plate', date: '21/06/2025', time: '18:00', venue: 'Estadio Monumental', status: 'scheduled' },
+  { id: 'C5', homeTeam: 'León', awayTeam: 'Al Ahly', date: '25/06/2025', time: '15:00', venue: 'Anfield', status: 'scheduled' },
+  { id: 'C6', homeTeam: 'River Plate', awayTeam: 'Chelsea', date: '25/06/2025', time: '18:00', venue: 'Estadio Monumental', status: 'scheduled' },
+
+  // Grupo D
+  { id: 'D1', homeTeam: 'Bayern Munich', awayTeam: 'Auckland City', date: '18/06/2025', time: '15:00', venue: 'Allianz Arena', status: 'scheduled' },
+  { id: 'D2', homeTeam: 'Boca Juniors', awayTeam: 'Wydad Casablanca', date: '18/06/2025', time: '18:00', venue: 'La Bombonera', status: 'scheduled' },
+  { id: 'D3', homeTeam: 'Bayern Munich', awayTeam: 'Wydad Casablanca', date: '22/06/2025', time: '15:00', venue: 'Allianz Arena', status: 'scheduled' },
+  { id: 'D4', homeTeam: 'Auckland City', awayTeam: 'Boca Juniors', date: '22/06/2025', time: '18:00', venue: 'La Bombonera', status: 'scheduled' },
+  { id: 'D5', homeTeam: 'Wydad Casablanca', awayTeam: 'Auckland City', date: '26/06/2025', time: '15:00', venue: 'Allianz Arena', status: 'scheduled' },
+  { id: 'D6', homeTeam: 'Boca Juniors', awayTeam: 'Bayern Munich', date: '26/06/2025', time: '18:00', venue: 'La Bombonera', status: 'scheduled' },
+
+  // Grupo E
+  { id: 'E1', homeTeam: 'Paris Saint-Germain', awayTeam: 'Mamelodi Sundowns', date: '19/06/2025', time: '15:00', venue: 'Parc des Princes', status: 'scheduled' },
+  { id: 'E2', homeTeam: 'Atlético Nacional', awayTeam: 'Al Ain', date: '19/06/2025', time: '18:00', venue: 'Atanasio Girardot', status: 'scheduled' },
+  { id: 'E3', homeTeam: 'Paris Saint-Germain', awayTeam: 'Al Ain', date: '23/06/2025', time: '15:00', venue: 'Parc des Princes', status: 'scheduled' },
+  { id: 'E4', homeTeam: 'Mamelodi Sundowns', awayTeam: 'Atlético Nacional', date: '23/06/2025', time: '18:00', venue: 'Atanasio Girardot', status: 'scheduled' },
+  { id: 'E5', homeTeam: 'Al Ain', awayTeam: 'Mamelodi Sundowns', date: '27/06/2025', time: '15:00', venue: 'Parc des Princes', status: 'scheduled' },
+  { id: 'E6', homeTeam: 'Atlético Nacional', awayTeam: 'Paris Saint-Germain', date: '27/06/2025', time: '18:00', venue: 'Atanasio Girardot', status: 'scheduled' },
+
+  // Grupo F
+  { id: 'F1', homeTeam: 'Juventus', awayTeam: 'Esperance', date: '20/06/2025', time: '15:00', venue: 'Juventus Stadium', status: 'scheduled' },
+  { id: 'F2', homeTeam: 'São Paulo', awayTeam: 'Al Jazira', date: '20/06/2025', time: '18:00', venue: 'Morumbi', status: 'scheduled' },
+  { id: 'F3', homeTeam: 'Juventus', awayTeam: 'Al Jazira', date: '24/06/2025', time: '15:00', venue: 'Juventus Stadium', status: 'scheduled' },
+  { id: 'F4', homeTeam: 'Esperance', awayTeam: 'São Paulo', date: '24/06/2025', time: '18:00', venue: 'Morumbi', status: 'scheduled' },
+  { id: 'F5', homeTeam: 'Al Jazira', awayTeam: 'Esperance', date: '28/06/2025', time: '15:00', venue: 'Juventus Stadium', status: 'scheduled' },
+  { id: 'F6', homeTeam: 'São Paulo', awayTeam: 'Juventus', date: '28/06/2025', time: '18:00', venue: 'Morumbi', status: 'scheduled' },
+
+  // Grupo G
+  { id: 'G1', homeTeam: 'Manchester United', awayTeam: 'Pachuca', date: '21/06/2025', time: '15:00', venue: 'Old Trafford', status: 'scheduled' },
+  { id: 'G2', homeTeam: 'Botafogo', awayTeam: 'Ulsan Hyundai', date: '21/06/2025', time: '18:00', venue: 'Nilton Santos', status: 'scheduled' },
+  { id: 'G3', homeTeam: 'Manchester United', awayTeam: 'Ulsan Hyundai', date: '25/06/2025', time: '15:00', venue: 'Old Trafford', status: 'scheduled' },
+  { id: 'G4', homeTeam: 'Pachuca', awayTeam: 'Botafogo', date: '25/06/2025', time: '18:00', venue: 'Nilton Santos', status: 'scheduled' },
+  { id: 'G5', homeTeam: 'Ulsan Hyundai', awayTeam: 'Pachuca', date: '29/06/2025', time: '15:00', venue: 'Old Trafford', status: 'scheduled' },
+  { id: 'G6', homeTeam: 'Botafogo', awayTeam: 'Manchester United', date: '29/06/2025', time: '18:00', venue: 'Nilton Santos', status: 'scheduled' },
+
+  // Grupo H
+  { id: 'H1', homeTeam: 'Barcelona', awayTeam: 'Raja Casablanca', date: '22/06/2025', time: '15:00', venue: 'Camp Nou', status: 'scheduled' },
+  { id: 'H2', homeTeam: 'Racing', awayTeam: 'Inter Miami', date: '22/06/2025', time: '18:00', venue: 'El Cilindro', status: 'scheduled' },
+  { id: 'H3', homeTeam: 'Barcelona', awayTeam: 'Inter Miami', date: '26/06/2025', time: '15:00', venue: 'Camp Nou', status: 'scheduled' },
+  { id: 'H4', homeTeam: 'Raja Casablanca', awayTeam: 'Racing', date: '26/06/2025', time: '18:00', venue: 'El Cilindro', status: 'scheduled' },
+  { id: 'H5', homeTeam: 'Inter Miami', awayTeam: 'Raja Casablanca', date: '30/06/2025', time: '15:00', venue: 'Camp Nou', status: 'scheduled' },
+  { id: 'H6', homeTeam: 'Racing', awayTeam: 'Barcelona', date: '30/06/2025', time: '18:00', venue: 'El Cilindro', status: 'scheduled' }
 ];

@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mockGroups, mockMatches } from '../data/mockData';
+import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 const Groups = () => {
   const [currentGroup, setCurrentGroup] = useState(0);
@@ -94,6 +96,17 @@ const Groups = () => {
   const standings = calculateStandings(currentGroup);
   const matches = getGroupMatches(currentGroup);
 
+  // Função utilitária para converter e formatar horário para o Brasil (BRT)
+  const formatToBRTime = (dateString: string, timeString: string) => {
+    // Combina a data e hora da partida (em formato "dd/MM/yyyy" e "HH:mm")
+    const [day, month, year] = dateString.split('/');
+    const [hour, minute] = timeString.split(':');
+    // Assume que os horários dos jogos estão em UTC para exemplo; ajuste se necessário conforme dados reais!
+    const utcDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)));
+    const zoned = toZonedTime(utcDate, 'America/Sao_Paulo');
+    return format(zoned, "HH:mm");
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header with Navigation */}
@@ -177,14 +190,19 @@ const Groups = () => {
               {matches.map((match) => {
                 const result = simulatedResults[match.id] || match.result;
                 const isFinished = match.status === 'finished';
-                
                 return (
                   <div key={match.id} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
                         <span>{match.date}</span>
-                        <span>{match.time}</span>
+                        {/* Horário convertido para BRT */}
+                        <span>
+                          {formatToBRTime(match.date, match.time)}h
+                          {match.status === "finished" && (
+                            <span className="text-green-600 font-bold text-xs ml-2">(Encerrado)</span>
+                          )}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <MapPin className="w-4 h-4" />
