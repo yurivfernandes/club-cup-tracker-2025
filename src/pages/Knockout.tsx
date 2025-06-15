@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { Trophy, Calendar, MapPin, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { utcToZonedTime, format } from 'date-fns-tz';
+// SUBSTITUIR importação "utcToZonedTime" POR "toZonedTime"
+import { toZonedTime, format as tzFormat } from 'date-fns-tz';
 
 const BR_TZ = 'America/Sao_Paulo';
 
@@ -12,8 +14,11 @@ const formatBrtTime = (date: string, timeUTC: string) => {
   const dtStr = `${currentYear}-${date.slice(3,5)}-${date.slice(0,2)}T${timeUTC}Z`;
   try {
     const utcDate = new Date(dtStr);
-    const brDate = utcToZonedTime(utcDate, BR_TZ);
-    return format(brDate, 'HH:mm');
+    const brDate = toZonedTime(utcDate, BR_TZ);
+    // IMPORTANTE: importar format de 'date-fns'
+    // Para padronizar, vamos importar format direto do 'date-fns'
+    // Mas aqui apenas corrigimos o erro de importação
+    return tzFormat(brDate, 'HH:mm');
   } catch {
     return '';
   }

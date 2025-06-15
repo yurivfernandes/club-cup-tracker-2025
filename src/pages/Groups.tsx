@@ -4,8 +4,9 @@ import { ChevronLeft, ChevronRight, Calendar, MapPin, Clock } from 'lucide-react
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mockGroups, mockMatches } from '../data/mockData';
-import { format, parse, parseISO } from 'date-fns';
-import { zonedTimeToUtc, utcToZonedTime, format as tzFormat } from 'date-fns-tz';
+import { format } from 'date-fns';
+// ATUALIZAÇÃO AQUI:
+import { toZonedTime } from 'date-fns-tz';
 
 const BR_TZ = 'America/Sao_Paulo';
 
@@ -17,7 +18,7 @@ const formatBrtTime = (date: string, timeUTC: string) => {
   const dtStr = `${currentYear}-${date.slice(3,5)}-${date.slice(0,2)}T${timeUTC}Z`;
   try {
     const utcDate = new Date(dtStr);
-    const brDate = utcToZonedTime(utcDate, BR_TZ);
+    const brDate = toZonedTime(utcDate, BR_TZ);
     return format(brDate, 'HH:mm');
   } catch {
     return '';
@@ -52,21 +53,22 @@ const Groups = () => {
     );
   };
 
+  // AQUI: Criando uma cópia imutável dos times já com as propriedades de estatísticas (evita problemas de tipagem)
+  const createTeamStats = (team: any) => ({
+    ...team,
+    points: 0,
+    played: 0,
+    won: 0,
+    drawn: 0,
+    lost: 0,
+    goalsFor: 0,
+    goalsAgainst: 0,
+  });
+
   const calculateStandings = (groupIndex: number) => {
-    const groupTeams = [...groups[groupIndex].teams];
+    const groupTeams = groups[groupIndex].teams.map(createTeamStats);
     const groupMatches = getGroupMatches(groupIndex);
     
-    // Reset points
-    groupTeams.forEach(team => {
-      team.points = 0;
-      team.played = 0;
-      team.won = 0;
-      team.drawn = 0;
-      team.lost = 0;
-      team.goalsFor = 0;
-      team.goalsAgainst = 0;
-    });
-
     // Calculate from matches
     groupMatches.forEach(match => {
       const result = simulatedResults[match.id] || match.result;
@@ -380,4 +382,3 @@ const Groups = () => {
 };
 
 export default Groups;
-
