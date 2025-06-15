@@ -1,28 +1,8 @@
 
 import React, { useState } from 'react';
-import { Trophy, Calendar, MapPin, Clock } from 'lucide-react';
+import { Trophy, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-// SUBSTITUIR importação "utcToZonedTime" POR "toZonedTime"
-import { toZonedTime, format as tzFormat } from 'date-fns-tz';
-
-const BR_TZ = 'America/Sao_Paulo';
-
-// Função utilitária para converter horário UTC para BRT (Brasília)
-const formatBrtTime = (date: string, timeUTC: string) => {
-  const currentYear = new Date().getFullYear();
-  const dtStr = `${currentYear}-${date.slice(3,5)}-${date.slice(0,2)}T${timeUTC}Z`;
-  try {
-    const utcDate = new Date(dtStr);
-    const brDate = toZonedTime(utcDate, BR_TZ);
-    // IMPORTANTE: importar format de 'date-fns'
-    // Para padronizar, vamos importar format direto do 'date-fns'
-    // Mas aqui apenas corrigimos o erro de importação
-    return tzFormat(brDate, 'HH:mm');
-  } catch {
-    return '';
-  }
-};
 
 const Knockout = () => {
   const [simulatedResults, setSimulatedResults] = useState<{[key: string]: string}>({});
@@ -32,8 +12,8 @@ const Knockout = () => {
       name: 'Oitavas de Final',
       date: '29 Jun - 2 Jul',
       matches: [
-        { id: 'R16_1', team1: '1º Grupo A', team2: '2º Grupo B', date: '29/06', time: '21:00', timeUTC: '00:00:00', venue: 'MetLife Stadium' },
-        { id: 'R16_2', team1: '1º Grupo B', team2: '2º Grupo A', date: '29/06', time: '18:00', timeUTC: '21:00:00', venue: 'Rose Bowl' },
+        { id: 'R16_1', team1: '1º Grupo A', team2: '2º Grupo B', date: '29/06', venue: 'MetLife Stadium' },
+        { id: 'R16_2', team1: '1º Grupo B', team2: '2º Grupo A', date: '29/06', venue: 'Rose Bowl' },
         { id: 'R16_3', team1: '1º Grupo C', team2: '2º Grupo D', date: '30/06', venue: 'Soldier Field' },
         { id: 'R16_4', team1: '1º Grupo D', team2: '2º Grupo C', date: '30/06', venue: 'Arrowhead Stadium' },
         { id: 'R16_5', team1: '1º Grupo E', team2: '2º Grupo F', date: '01/07', venue: 'Lincoln Financial Field' },
@@ -116,8 +96,6 @@ const Knockout = () => {
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-3 h-3" />
                         <span>{match.date}</span>
-                        <Clock className="w-3 h-3 ml-2 text-red-400" />
-                        <span>{formatBrtTime(match.date, match.timeUTC)}h</span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <MapPin className="w-3 h-3" />

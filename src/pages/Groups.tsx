@@ -1,29 +1,9 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar, MapPin, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { mockGroups, mockMatches } from '../data/mockData';
-import { format } from 'date-fns';
-// ATUALIZAÇÃO AQUI:
-import { toZonedTime } from 'date-fns-tz';
-
-const BR_TZ = 'America/Sao_Paulo';
-
-// Função utilitária para converter o horário UTC para o horário de Brasília e já formatar
-const formatBrtTime = (date: string, timeUTC: string) => {
-  // date: "26/06", timeUTC: "21:00:00"
-  const currentYear = new Date().getFullYear();
-  // Parse para Date
-  const dtStr = `${currentYear}-${date.slice(3,5)}-${date.slice(0,2)}T${timeUTC}Z`;
-  try {
-    const utcDate = new Date(dtStr);
-    const brDate = toZonedTime(utcDate, BR_TZ);
-    return format(brDate, 'HH:mm');
-  } catch {
-    return '';
-  }
-};
 
 const Groups = () => {
   const [currentGroup, setCurrentGroup] = useState(0);
@@ -48,27 +28,26 @@ const Groups = () => {
   };
 
   const getGroupMatches = (groupIndex: number) => {
-    return mockMatches.filter(match =>
+    return mockMatches.filter(match => 
       groups[groupIndex].teams.some(team => team.name === match.homeTeam || team.name === match.awayTeam)
     );
   };
 
-  // AQUI: Criando uma cópia imutável dos times já com as propriedades de estatísticas (evita problemas de tipagem)
-  const createTeamStats = (team: any) => ({
-    ...team,
-    points: 0,
-    played: 0,
-    won: 0,
-    drawn: 0,
-    lost: 0,
-    goalsFor: 0,
-    goalsAgainst: 0,
-  });
-
   const calculateStandings = (groupIndex: number) => {
-    const groupTeams = groups[groupIndex].teams.map(createTeamStats);
+    const groupTeams = [...groups[groupIndex].teams];
     const groupMatches = getGroupMatches(groupIndex);
     
+    // Reset points
+    groupTeams.forEach(team => {
+      team.points = 0;
+      team.played = 0;
+      team.won = 0;
+      team.drawn = 0;
+      team.lost = 0;
+      team.goalsFor = 0;
+      team.goalsAgainst = 0;
+    });
+
     // Calculate from matches
     groupMatches.forEach(match => {
       const result = simulatedResults[match.id] || match.result;
@@ -114,9 +93,6 @@ const Groups = () => {
   const currentGroupData = groups[currentGroup];
   const standings = calculateStandings(currentGroup);
   const matches = getGroupMatches(currentGroup);
-
-  // Novidade: tabela de todos os jogos dos grupos
-  const allGroupMatches = mockMatches;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -166,14 +142,10 @@ const Groups = () => {
                   <div className="w-8 h-8 flex items-center justify-center text-sm font-bold text-gray-600 mr-3">
                     {index + 1}
                   </div>
-                  {/* Mostra o escudo do clube */}
                   <img 
-                    src={team.logo} 
+                    src={team.flag} 
                     alt={team.name}
-                    className="w-8 h-8 object-contain rounded mr-3 bg-white border"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://via.placeholder.com/40x40/cccccc/666666?text=?';
-                    }}
+                    className="w-8 h-6 object-cover rounded mr-3"
                   />
                   <div className="flex-1">
                     <div className="font-semibold text-gray-800">{team.name}</div>
@@ -191,45 +163,39 @@ const Groups = () => {
           </CardContent>
         </Card>
 
-        {/* Matches (simulação do grupo) */}
+        {/* Matches */}
         <Card className="border-0 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-xl text-gray-800">Partidas deste grupo</CardTitle>
+            <CardTitle className="text-xl text-gray-800">Partidas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {matches.map((match) => {
                 const result = simulatedResults[match.id] || match.result;
                 const isFinished = match.status === 'finished';
-                const brTime = match.timeUTC ? formatBrtTime(match.date, match.timeUTC) : match.time;
+                
                 return (
                   <div key={match.id} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
                         <span>{match.date}</span>
-                        {/* Mostra o horário sempre no fuso de Brasília */}
-                        <Clock className="w-4 h-4 ml-2 text-red-400" />
-                        <span>{brTime}h</span>
+                        <span>{match.time}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <MapPin className="w-4 h-4" />
                         <span>{match.venue}</span>
                       </div>
                     </div>
+                    
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-1">
-                        {/* Escudo do time da casa */}
                         <img 
-                          src={
-                            groups
-                              .flatMap(g => g.teams)
-                              .find(t => t.name === match.homeTeam)?.logo
-                          }
+                          src={`https://flagcdn.com/24x18/${match.homeTeam.toLowerCase().replace(/\s+/g, '-')}.png`}
                           alt={match.homeTeam}
-                          className="w-8 h-8 object-contain rounded bg-white border"
+                          className="w-6 h-4 object-cover rounded"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/40x40/cccccc/666666?text=?';
+                            e.currentTarget.src = 'https://via.placeholder.com/24x18/cccccc/666666?text=?';
                           }}
                         />
                         <span className="font-medium text-gray-800">{match.homeTeam}</span>
@@ -289,17 +255,12 @@ const Groups = () => {
                       
                       <div className="flex items-center space-x-3 flex-1 justify-end">
                         <span className="font-medium text-gray-800">{match.awayTeam}</span>
-                        {/* Escudo do time visitante */}
                         <img 
-                          src={
-                            groups
-                              .flatMap(g => g.teams)
-                              .find(t => t.name === match.awayTeam)?.logo
-                          }
+                          src={`https://flagcdn.com/24x18/${match.awayTeam.toLowerCase().replace(/\s+/g, '-')}.png`}
                           alt={match.awayTeam}
-                          className="w-8 h-8 object-contain rounded bg-white border"
+                          className="w-6 h-4 object-cover rounded"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/40x40/cccccc/666666?text=?';
+                            e.currentTarget.src = 'https://via.placeholder.com/24x18/cccccc/666666?text=?';
                           }}
                         />
                       </div>
@@ -311,72 +272,6 @@ const Groups = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Tabela geral de jogos de todos os grupos */}
-      <Card className="border-0 shadow-lg mt-10">
-        <CardHeader>
-          <CardTitle className="text-xl text-gray-800">Todos os Jogos da Fase de Grupos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="table-auto w-full text-sm">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="px-2 py-2 text-left">Grupo</th>
-                  <th className="px-2 py-2 text-left">Data</th>
-                  <th className="px-2 py-2 text-left">Horário (BRT)</th>
-                  <th className="px-2 py-2 text-left">Estádio</th>
-                  <th className="px-2 py-2 text-left">Mandante</th>
-                  <th className="px-2 py-2 text-left">Visitante</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allGroupMatches.map((match) => {
-                  const brTime = match.timeUTC ? formatBrtTime(match.date, match.timeUTC) : match.time;
-                  return (
-                    <tr key={match.id} className="border-t">
-                      <td className="px-2 py-2">{match.group}</td>
-                      <td className="px-2 py-2">{match.date}</td>
-                      <td className="px-2 py-2">{brTime}h</td>
-                      <td className="px-2 py-2">{match.venue}</td>
-                      <td className="px-2 py-2 flex items-center space-x-2">
-                        <img
-                          src={
-                            groups
-                              .flatMap(g => g.teams)
-                              .find(t => t.name === match.homeTeam)?.logo
-                          }
-                          alt={match.homeTeam}
-                          className="w-6 h-6 object-contain rounded bg-white border mr-2"
-                          onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/40x40/cccccc/666666?text=?';
-                          }}
-                        />
-                        <span>{match.homeTeam}</span>
-                      </td>
-                      <td className="px-2 py-2 flex items-center space-x-2">
-                        <img
-                          src={
-                            groups
-                              .flatMap(g => g.teams)
-                              .find(t => t.name === match.awayTeam)?.logo
-                          }
-                          alt={match.awayTeam}
-                          className="w-6 h-6 object-contain rounded bg-white border mr-2"
-                          onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/40x40/cccccc/666666?text=?';
-                          }}
-                        />
-                        <span>{match.awayTeam}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
