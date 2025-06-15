@@ -1,42 +1,70 @@
-
 import React from 'react';
 import { Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFifaData } from "../hooks/useFifaData";
-import { format, subDays, addDays } from "date-fns";
-import { ptBR } from "date-fns/locale/pt-BR";
 import CompactMatchAgenda from "../components/CompactMatchAgenda";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Util para padronizar datas em dd/MM/yyyy em UTC:
-function getDateStrUTC(offset: number = 0) {
-  const now = new Date();
-  // Cria sempre uma data em UTC às 00:00
-  const utcDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  utcDate.setUTCDate(utcDate.getUTCDate() + offset);
-  const day = utcDate.getUTCDate().toString().padStart(2, '0');
-  const month = (utcDate.getUTCMonth() + 1).toString().padStart(2, '0');
-  const year = utcDate.getUTCFullYear();
+// Função utilitária para obter a data no formato 'dd/MM/yyyy' de forma determinística
+function getDateStr(offset: number = 0) {
+  // Usamos uma data base fixa (hoje é 15/06/2025) e operamos em UTC
+  // para evitar problemas com fuso horário, garantindo consistência.
+  const baseDate = new Date(Date.UTC(2025, 5, 15)); // Mês 5 é Junho
+  baseDate.setUTCDate(baseDate.getUTCDate() + offset);
+
+  const day = baseDate.getUTCDate().toString().padStart(2, '0');
+  const month = (baseDate.getUTCMonth() + 1).toString().padStart(2, '0');
+  const year = baseDate.getUTCFullYear();
+  
   return `${day}/${month}/${year}`;
 }
+
 
 const Home = () => {
   const { data, isLoading, error } = useFifaData();
 
-  // Calcula datas no formato dd/MM/yyyy em UTC puro:
-  const yesterdayStr = getDateStrUTC(-1);
-  const todayStr = getDateStrUTC(0);
-  const tomorrowStr = getDateStrUTC(1);
+  // Calcula datas de forma segura e determinística
+  const yesterdayStr = getDateStr(-1); // "14/06/2025"
+  const todayStr = getDateStr(0);     // "15/06/2025"
+  const tomorrowStr = getDateStr(1);  // "16/06/2025"
 
-  // Garante que a comparação dos jogos é feita com as datas padronizadas:
-  const formatDateString = (dateStr: string) => {
-    // Espera data já no formato dd/MM/yyyy. Se não, tenta normalizar.
-    if (!dateStr.includes("/")) return dateStr;
-    return dateStr;
-  };
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
+        <div className="text-center mb-12">
+          <Skeleton className="w-20 h-20 rounded-full mx-auto mb-6" />
+          <Skeleton className="h-10 w-3/4 mx-auto mb-4" />
+          <Skeleton className="h-6 w-1/2 mx-auto" />
+        </div>
+        <div className="mb-10 flex flex-col md:flex-row md:gap-5 gap-4">
+          <Skeleton className="h-[320px] flex-1 rounded-xl" />
+          <Skeleton className="h-[320px] flex-1 rounded-xl" />
+          <Skeleton className="h-[320px] flex-1 rounded-xl" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <Skeleton className="h-28 rounded-lg" />
+          <Skeleton className="h-28 rounded-lg" />
+          <Skeleton className="h-28 rounded-lg" />
+          <Skeleton className="h-28 rounded-lg" />
+        </div>
+      </div>
+    );
+  }
 
-  const matchesYesterday = data?.matches.filter(m => formatDateString(m.date) === yesterdayStr) || [];
-  const matchesToday = data?.matches.filter(m => formatDateString(m.date) === todayStr) || [];
-  const matchesTomorrow = data?.matches.filter(m => formatDateString(m.date) === tomorrowStr) || [];
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center flex flex-col items-center justify-center min-h-[60vh]">
+        <Trophy className="w-16 h-16 text-red-200 mb-4" />
+        <h2 className="text-2xl font-bold text-red-600">Ocorreu um erro ao buscar os jogos</h2>
+        <p className="text-gray-600 mt-2 max-w-md">Não foi possível carregar os dados das partidas. Por favor, verifique sua conexão ou tente novamente mais tarde.</p>
+        <p className="text-xs text-gray-400 mt-6 bg-gray-50 p-2 rounded border">{error.message}</p>
+      </div>
+    );
+  }
+
+  const matchesYesterday = data?.matches.filter(m => m.date === yesterdayStr) || [];
+  const matchesToday = data?.matches.filter(m => m.date === todayStr) || [];
+  const matchesTomorrow = data?.matches.filter(m => m.date === tomorrowStr) || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
