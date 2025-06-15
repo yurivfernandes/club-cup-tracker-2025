@@ -1,4 +1,3 @@
-
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -113,7 +112,7 @@ const realGroups = [
 
 // Partidas reais do Mundial de Clubes 2025 (formato oficial da FIFA)
 const realMatches: Match[] = [
-  // Grupo A - Jogo de abertura já ocorreu
+  // Grupo A
   { id: 'A1', homeTeam: 'Inter Miami', awayTeam: 'Al Hilal', date: '15/06/2025', time: '20:00', venue: 'Hard Rock Stadium, Miami', status: 'finished', result: { home: 1, away: 2 } },
   { id: 'A2', homeTeam: 'Palmeiras', awayTeam: 'Porto', date: '16/06/2025', time: '17:00', venue: 'Mercedes-Benz Stadium, Atlanta', status: 'scheduled' },
   { id: 'A3', homeTeam: 'Al Hilal', awayTeam: 'Palmeiras', date: '19/06/2025', time: '20:00', venue: 'Hard Rock Stadium, Miami', status: 'scheduled' },
@@ -122,14 +121,60 @@ const realMatches: Match[] = [
   { id: 'A6', homeTeam: 'Inter Miami', awayTeam: 'Palmeiras', date: '23/06/2025', time: '20:00', venue: 'Mercedes-Benz Stadium, Atlanta', status: 'scheduled' },
 
   // Grupo B
-  { id: 'B1', homeTeam: 'PSG', awayTeam: 'Atlético Madrid', date: '17/06/2025', time: '17:00', venue: 'Rose Bowl, Los Angeles', status: 'scheduled' },
+  { id: 'B1', homeTeam: 'Paris Saint-Germain', awayTeam: 'Atlético Madrid', date: '17/06/2025', time: '17:00', venue: 'Rose Bowl, Los Angeles', status: 'scheduled' },
   { id: 'B2', homeTeam: 'Botafogo', awayTeam: 'Seattle Sounders', date: '17/06/2025', time: '20:00', venue: 'Lincoln Financial Field, Philadelphia', status: 'scheduled' },
   { id: 'B3', homeTeam: 'Atlético Madrid', awayTeam: 'Botafogo', date: '20/06/2025', time: '17:00', venue: 'Rose Bowl, Los Angeles', status: 'scheduled' },
-  { id: 'B4', homeTeam: 'Seattle Sounders', awayTeam: 'PSG', date: '20/06/2025', time: '20:00', venue: 'Lincoln Financial Field, Philadelphia', status: 'scheduled' },
+  { id: 'B4', homeTeam: 'Seattle Sounders', awayTeam: 'Paris Saint-Germain', date: '20/06/2025', time: '20:00', venue: 'Lincoln Financial Field, Philadelphia', status: 'scheduled' },
   { id: 'B5', homeTeam: 'Atlético Madrid', awayTeam: 'Seattle Sounders', date: '24/06/2025', time: '15:00', venue: 'Rose Bowl, Los Angeles', status: 'scheduled' },
-  { id: 'B6', homeTeam: 'Botafogo', awayTeam: 'PSG', date: '24/06/2025', time: '20:00', venue: 'Lincoln Financial Field, Philadelphia', status: 'scheduled' },
+  { id: 'B6', homeTeam: 'Botafogo', awayTeam: 'Paris Saint-Germain', date: '24/06/2025', time: '20:00', venue: 'Lincoln Financial Field, Philadelphia', status: 'scheduled' },
 
-  // Continue with more groups...
+  // Grupo C
+  { id: 'C1', homeTeam: 'Bayern Munich', awayTeam: 'Auckland City', date: '18/06/2025', time: '18:00', venue: 'Allianz Arena, Munique', status: 'scheduled' },
+  { id: 'C2', homeTeam: 'Boca Juniors', awayTeam: 'Wydad Casablanca', date: '18/06/2025', time: '21:00', venue: 'La Bombonera, Buenos Aires', status: 'scheduled' },
+  { id: 'C3', homeTeam: 'Bayern Munich', awayTeam: 'Wydad Casablanca', date: '21/06/2025', time: '19:00', venue: 'Allianz Arena, Munique', status: 'scheduled' },
+  { id: 'C4', homeTeam: 'Auckland City', awayTeam: 'Boca Juniors', date: '21/06/2025', time: '21:30', venue: 'Eden Park, Auckland', status: 'scheduled' },
+  { id: 'C5', homeTeam: 'Wydad Casablanca', awayTeam: 'Auckland City', date: '25/06/2025', time: '16:00', venue: 'Stade Mohammed V, Casablanca', status: 'scheduled' },
+  { id: 'C6', homeTeam: 'Boca Juniors', awayTeam: 'Bayern Munich', date: '25/06/2025', time: '21:00', venue: 'La Bombonera, Buenos Aires', status: 'scheduled' },
+
+  // Grupo D
+  { id: 'D1', homeTeam: 'Flamengo', awayTeam: 'Chelsea', date: '19/06/2025', time: '18:00', venue: 'Maracanã, Rio de Janeiro', status: 'scheduled' },
+  { id: 'D2', homeTeam: 'León', awayTeam: 'Esperance', date: '19/06/2025', time: '21:00', venue: 'Estadio León, León', status: 'scheduled' },
+  { id: 'D3', homeTeam: 'Flamengo', awayTeam: 'Esperance', date: '22/06/2025', time: '19:00', venue: 'Maracanã, Rio de Janeiro', status: 'scheduled' },
+  { id: 'D4', homeTeam: 'Chelsea', awayTeam: 'León', date: '22/06/2025', time: '21:30', venue: 'Stamford Bridge, Londres', status: 'scheduled' },
+  { id: 'D5', homeTeam: 'Esperance', awayTeam: 'Chelsea', date: '26/06/2025', time: '16:00', venue: 'Stade Olympique, Radès', status: 'scheduled' },
+  { id: 'D6', homeTeam: 'León', awayTeam: 'Flamengo', date: '26/06/2025', time: '21:00', venue: 'Estadio León, León', status: 'scheduled' },
+
+  // Grupo E
+  { id: 'E1', homeTeam: 'River Plate', awayTeam: 'Urawa Red Diamonds', date: '20/06/2025', time: '18:00', venue: 'Monumental, Buenos Aires', status: 'scheduled' },
+  { id: 'E2', homeTeam: 'Monterrey', awayTeam: 'Al Hilal', date: '20/06/2025', time: '21:00', venue: 'Estadio BBVA, Monterrey', status: 'scheduled' },
+  { id: 'E3', homeTeam: 'River Plate', awayTeam: 'Al Hilal', date: '23/06/2025', time: '19:00', venue: 'Monumental, Buenos Aires', status: 'scheduled' },
+  { id: 'E4', homeTeam: 'Urawa Red Diamonds', awayTeam: 'Monterrey', date: '23/06/2025', time: '21:30', venue: 'Saitama Stadium, Saitama', status: 'scheduled' },
+  { id: 'E5', homeTeam: 'Al Hilal', awayTeam: 'Urawa Red Diamonds', date: '27/06/2025', time: '16:00', venue: 'King Fahd Stadium, Riade', status: 'scheduled' },
+  { id: 'E6', homeTeam: 'Monterrey', awayTeam: 'River Plate', date: '27/06/2025', time: '21:00', venue: 'Estadio BBVA, Monterrey', status: 'scheduled' },
+
+  // Grupo F
+  { id: 'F1', homeTeam: 'Fluminense', awayTeam: 'Borussia Dortmund', date: '21/06/2025', time: '18:00', venue: 'Maracanã, Rio de Janeiro', status: 'scheduled' },
+  { id: 'F2', homeTeam: 'Ulsan Hyundai', awayTeam: 'Mamelodi Sundowns', date: '21/06/2025', time: '21:00', venue: 'Ulsan Munsu, Ulsan', status: 'scheduled' },
+  { id: 'F3', homeTeam: 'Borussia Dortmund', awayTeam: 'Ulsan Hyundai', date: '24/06/2025', time: '19:00', venue: 'Signal Iduna Park, Dortmund', status: 'scheduled' },
+  { id: 'F4', homeTeam: 'Mamelodi Sundowns', awayTeam: 'Fluminense', date: '24/06/2025', time: '21:30', venue: 'Loftus Versfeld, Pretória', status: 'scheduled' },
+  { id: 'F5', homeTeam: 'Ulsan Hyundai', awayTeam: 'Fluminense', date: '28/06/2025', time: '16:00', venue: 'Ulsan Munsu, Ulsan', status: 'scheduled' },
+  { id: 'F6', homeTeam: 'Borussia Dortmund', awayTeam: 'Mamelodi Sundowns', date: '28/06/2025', time: '21:00', venue: 'Signal Iduna Park, Dortmund', status: 'scheduled' },
+
+  // Grupo G
+  { id: 'G1', homeTeam: 'Manchester City', awayTeam: 'Wydad Casablanca', date: '22/06/2025', time: '18:00', venue: 'Etihad Stadium, Manchester', status: 'scheduled' },
+  { id: 'G2', homeTeam: 'Al Ain', awayTeam: 'Juventus', date: '22/06/2025', time: '21:00', venue: 'Hazza Bin Zayed Stadium, Al Ain', status: 'scheduled' },
+  { id: 'G3', homeTeam: 'Manchester City', awayTeam: 'Al Ain', date: '25/06/2025', time: '19:00', venue: 'Etihad Stadium, Manchester', status: 'scheduled' },
+  { id: 'G4', homeTeam: 'Juventus', awayTeam: 'Wydad Casablanca', date: '25/06/2025', time: '21:30', venue: 'Allianz Stadium, Turim', status: 'scheduled' },
+  { id: 'G5', homeTeam: 'Al Ain', awayTeam: 'Wydad Casablanca', date: '29/06/2025', time: '16:00', venue: 'Hazza Bin Zayed Stadium, Al Ain', status: 'scheduled' },
+  { id: 'G6', homeTeam: 'Juventus', awayTeam: 'Manchester City', date: '29/06/2025', time: '21:00', venue: 'Allianz Stadium, Turim', status: 'scheduled' },
+
+  // Grupo H
+  { id: 'H1', homeTeam: 'Real Madrid', awayTeam: 'Al Hilal', date: '23/06/2025', time: '18:00', venue: 'Santiago Bernabéu, Madri', status: 'scheduled' },
+  { id: 'H2', homeTeam: 'Pachuca', awayTeam: 'Salzburg', date: '23/06/2025', time: '21:00', venue: 'Estadio Hidalgo, Pachuca', status: 'scheduled' },
+  { id: 'H3', homeTeam: 'Real Madrid', awayTeam: 'Pachuca', date: '26/06/2025', time: '19:00', venue: 'Santiago Bernabéu, Madri', status: 'scheduled' },
+  { id: 'H4', homeTeam: 'Al Hilal', awayTeam: 'Salzburg', date: '26/06/2025', time: '21:30', venue: 'King Fahd Stadium, Riade', status: 'scheduled' },
+  { id: 'H5', homeTeam: 'Al Hilal', awayTeam: 'Pachuca', date: '30/06/2025', time: '16:00', venue: 'King Fahd Stadium, Riade', status: 'scheduled' },
+  { id: 'H6', homeTeam: 'Salzburg', awayTeam: 'Real Madrid', date: '30/06/2025', time: '21:00', venue: 'Red Bull Arena, Salzburg', status: 'scheduled' }
 ];
 
 Deno.serve(async (req) => {
