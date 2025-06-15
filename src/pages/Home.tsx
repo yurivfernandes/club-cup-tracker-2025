@@ -2,21 +2,25 @@ import React from 'react';
 import { Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFifaData } from "../hooks/useFifaData";
-import { MatchListOfDay } from "../components/MatchListOfDay";
-import { format } from "date-fns";
-import ptBR from "date-fns/locale/pt-BR";
+import { format, subDays, addDays, parse } from "date-fns";
+import { ptBR } from "date-fns/locale/pt-BR";
+import CompactMatchAgenda from "../components/CompactMatchAgenda";
 
 const Home = () => {
   const { data, isLoading, error } = useFifaData();
 
-  // Data de hoje (no formato das partidas: 'dd/MM/yyyy')
+  // Função para parsear 'dd/MM/yyyy' para Date
+  const parseDateStr = (str: string) => parse(str, "dd/MM/yyyy", new Date());
+
   const now = new Date();
   const todayStr = format(now, "dd/MM/yyyy", { locale: ptBR });
+  const yesterdayStr = format(subDays(now, 1), "dd/MM/yyyy", { locale: ptBR });
+  const tomorrowStr = format(addDays(now, 1), "dd/MM/yyyy", { locale: ptBR });
 
   // Filtra jogos do dia
-  const matchesToday = data?.matches.filter(
-    m => m.date === todayStr
-  ) || [];
+  const matchesYesterday = data?.matches.filter(m => m.date === yesterdayStr) || [];
+  const matchesToday = data?.matches.filter(m => m.date === todayStr) || [];
+  const matchesTomorrow = data?.matches.filter(m => m.date === tomorrowStr) || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -33,16 +37,17 @@ const Home = () => {
         </p>
       </div>
 
-      {/* Jogos do dia */}
-      <div className="my-6">
-        <h2 className="text-2xl font-bold mb-2 text-gray-800 text-center">Jogos do Dia {format(now, "dd 'de' MMMM", { locale: ptBR })}</h2>
-        {isLoading ? (
-          <div className="text-center text-gray-500">Carregando jogos...</div>
-        ) : error ? (
-          <div className="text-center text-red-500">Erro ao carregar jogos.</div>
-        ) : (
-          <MatchListOfDay matches={matchesToday} dateStr={todayStr} />
-        )}
+      {/* Agenda compacta: Ontem, Hoje, Amanhã */}
+      <div className="mb-10 flex flex-col md:flex-row md:gap-5 gap-0">
+        <div className="flex-1">
+          <CompactMatchAgenda title="Jogos de ontem" matches={matchesYesterday} showDate={false} />
+        </div>
+        <div className="flex-1">
+          <CompactMatchAgenda title="Jogos de hoje" matches={matchesToday} showDate={false} />
+        </div>
+        <div className="flex-1">
+          <CompactMatchAgenda title="Jogos de amanhã" matches={matchesTomorrow} showDate={false} />
+        </div>
       </div>
 
       {/* Quick Stats */}
