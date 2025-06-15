@@ -142,10 +142,14 @@ const Groups = () => {
                   <div className="w-8 h-8 flex items-center justify-center text-sm font-bold text-gray-600 mr-3">
                     {index + 1}
                   </div>
+                  {/* Troca da bandeira para escudo */}
                   <img 
-                    src={team.flag} 
+                    src={team.logo || team.flag} 
                     alt={team.name}
-                    className="w-8 h-6 object-cover rounded mr-3"
+                    className="w-8 h-8 object-contain bg-white rounded mr-3 border"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/32x32/cccccc/666666?text=?';
+                    }}
                   />
                   <div className="flex-1">
                     <div className="font-semibold text-gray-800">{team.name}</div>
@@ -190,12 +194,18 @@ const Groups = () => {
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-1">
+                        {/* Troca da bandeira para escudo do time mandante */}
                         <img 
-                          src={`https://flagcdn.com/24x18/${match.homeTeam.toLowerCase().replace(/\s+/g, '-')}.png`}
+                          src={
+                            groups
+                              .find((g) => g.teams.some((t) => t.name === match.homeTeam))
+                              ?.teams.find((t) => t.name === match.homeTeam)?.logo ||
+                            'https://via.placeholder.com/32x32/cccccc/666666?text=?'
+                          }
                           alt={match.homeTeam}
-                          className="w-6 h-4 object-cover rounded"
+                          className="w-8 h-8 object-contain bg-white rounded border"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/24x18/cccccc/666666?text=?';
+                            e.currentTarget.src = 'https://via.placeholder.com/32x32/cccccc/666666?text=?';
                           }}
                         />
                         <span className="font-medium text-gray-800">{match.homeTeam}</span>
@@ -255,12 +265,18 @@ const Groups = () => {
                       
                       <div className="flex items-center space-x-3 flex-1 justify-end">
                         <span className="font-medium text-gray-800">{match.awayTeam}</span>
+                        {/* Troca da bandeira para escudo do time visitante */}
                         <img 
-                          src={`https://flagcdn.com/24x18/${match.awayTeam.toLowerCase().replace(/\s+/g, '-')}.png`}
+                          src={
+                            groups
+                              .find((g) => g.teams.some((t) => t.name === match.awayTeam))
+                              ?.teams.find((t) => t.name === match.awayTeam)?.logo ||
+                            'https://via.placeholder.com/32x32/cccccc/666666?text=?'
+                          }
                           alt={match.awayTeam}
-                          className="w-6 h-4 object-cover rounded"
+                          className="w-8 h-8 object-contain bg-white rounded border"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/24x18/cccccc/666666?text=?';
+                            e.currentTarget.src = 'https://via.placeholder.com/32x32/cccccc/666666?text=?';
                           }}
                         />
                       </div>
