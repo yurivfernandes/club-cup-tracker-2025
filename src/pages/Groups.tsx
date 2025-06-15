@@ -1,25 +1,30 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar, MapPin, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { mockGroups, mockMatches } from '../data/mockData';
 import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { useFifaData, type Group, type Match } from '@/hooks/useFifaData';
 
 const Groups = () => {
   const [currentGroup, setCurrentGroup] = useState(0);
   const [simulatedResults, setSimulatedResults] = useState<{[key: string]: {home: number, away: number}}>({});
+  
+  const { data: fifaData, isLoading, error } = useFifaData();
 
-  const groups = mockGroups;
   const groupLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
   const nextGroup = () => {
-    setCurrentGroup((prev) => (prev + 1) % groups.length);
+    if (fifaData) {
+      setCurrentGroup((prev) => (prev + 1) % fifaData.groups.length);
+    }
   };
 
   const prevGroup = () => {
-    setCurrentGroup((prev) => (prev - 1 + groups.length) % groups.length);
+    if (fifaData) {
+      setCurrentGroup((prev) => (prev - 1 + fifaData.groups.length) % fifaData.groups.length);
+    }
   };
 
   const updateResult = (matchId: string, homeScore: number, awayScore: number) => {
@@ -29,14 +34,17 @@ const Groups = () => {
     }));
   };
 
-  const getGroupMatches = (groupIndex: number) => {
-    return mockMatches.filter(match => 
-      groups[groupIndex].teams.some(team => team.name === match.homeTeam || team.name === match.awayTeam)
+  const getGroupMatches = (groupIndex: number): Match[] => {
+    if (!fifaData) return [];
+    return fifaData.matches.filter(match => 
+      fifaData.groups[groupIndex].teams.some(team => team.name === match.homeTeam || team.name === match.awayTeam)
     );
   };
 
   const calculateStandings = (groupIndex: number) => {
-    const groupTeams = [...groups[groupIndex].teams];
+    if (!fifaData) return [];
+    
+    const groupTeams = [...fifaData.groups[groupIndex].teams];
     const groupMatches = getGroupMatches(groupIndex);
     
     // Reset points
@@ -92,20 +100,52 @@ const Groups = () => {
     });
   };
 
-  const currentGroupData = groups[currentGroup];
-  const standings = calculateStandings(currentGroup);
-  const matches = getGroupMatches(currentGroup);
-
   // Função utilitária para converter e formatar horário para o Brasil (BRT)
   const formatToBRTime = (dateString: string, timeString: string) => {
-    // Combina a data e hora da partida (em formato "dd/MM/yyyy" e "HH:mm")
     const [day, month, year] = dateString.split('/');
     const [hour, minute] = timeString.split(':');
-    // Assume que os horários dos jogos estão em UTC para exemplo; ajuste se necessário conforme dados reais!
     const utcDate = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute)));
     const zoned = toZonedTime(utcDate, 'America/Sao_Paulo');
     return format(zoned, "HH:mm");
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+            <p className="text-gray-600">Carregando dados do Mundial de Clubes...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Erro ao carregar dados: {error.message}</p>
+          <Button onClick={() => window.location.reload()}>Tentar novamente</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!fifaData) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center">
+          <p className="text-gray-600">Nenhum dado disponível</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentGroupData = fifaData.groups[currentGroup];
+  const standings = calculateStandings(currentGroup);
+  const matches = getGroupMatches(currentGroup);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -122,7 +162,8 @@ const Groups = () => {
         
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Grupo {groupLabels[currentGroup]}</h1>
-          <p className="text-gray-600">Clique nos placares para simular resultados futuros</p>
+          <p className="text-gray-600">Mundial de Clubes da FIFA 2025</p>
+          <p className="text-sm text-gray-500">Clique nos placares para simular resultados futuros</p>
         </div>
         
         <Button
@@ -155,7 +196,6 @@ const Groups = () => {
                   <div className="w-8 h-8 flex items-center justify-center text-sm font-bold text-gray-600 mr-3">
                     {index + 1}
                   </div>
-                  {/* Troca da bandeira para escudo */}
                   <img 
                     src={team.logo || team.flag} 
                     alt={team.name}
@@ -196,7 +236,6 @@ const Groups = () => {
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
                         <span>{match.date}</span>
-                        {/* Horário convertido para BRT */}
                         <span>
                           {formatToBRTime(match.date, match.time)}h
                           {match.status === "finished" && (
@@ -212,10 +251,9 @@ const Groups = () => {
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3 flex-1">
-                        {/* Troca da bandeira para escudo do time mandante */}
                         <img 
                           src={
-                            groups
+                            fifaData.groups
                               .find((g) => g.teams.some((t) => t.name === match.homeTeam))
                               ?.teams.find((t) => t.name === match.homeTeam)?.logo ||
                             'https://via.placeholder.com/32x32/cccccc/666666?text=?'
@@ -283,10 +321,9 @@ const Groups = () => {
                       
                       <div className="flex items-center space-x-3 flex-1 justify-end">
                         <span className="font-medium text-gray-800">{match.awayTeam}</span>
-                        {/* Troca da bandeira para escudo do time visitante */}
                         <img 
                           src={
-                            groups
+                            fifaData.groups
                               .find((g) => g.teams.some((t) => t.name === match.awayTeam))
                               ?.teams.find((t) => t.name === match.awayTeam)?.logo ||
                             'https://via.placeholder.com/32x32/cccccc/666666?text=?'
@@ -306,6 +343,12 @@ const Groups = () => {
           </CardContent>
         </Card>
       </div>
+      
+      {fifaData.lastUpdated && (
+        <div className="mt-8 text-center text-sm text-gray-500">
+          Última atualização: {new Date(fifaData.lastUpdated).toLocaleString('pt-BR')}
+        </div>
+      )}
     </div>
   );
 };
