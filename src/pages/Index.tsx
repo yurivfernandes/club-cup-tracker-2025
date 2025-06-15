@@ -1,13 +1,29 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from '../components/layout/Navbar';
+import Home from './Home';
+import Groups from './Groups';
+import Knockout from './Knockout';
+import Ranking from './Ranking';
+import Criteria from './Criteria';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <Router>
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <main className="pt-16">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/groups" element={<Groups />} />
+            <Route path="/knockout" element={<Knockout />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/criteria" element={<Criteria />} />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </Router>
   );
 };
 
