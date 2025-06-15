@@ -1,0 +1,10 @@
+name = "club-cup-tracker-2025"
+type = "webpack"
+account_id = ""
+workers_dev = true
+route = ""
+zone_id = ""
+
+[site]
+bucket = "./dist"
+entry-point = "workers-site"
