@@ -1,23 +1,34 @@
+
 import React from 'react';
 import { Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFifaData } from "../hooks/useFifaData";
-import { format, subDays, addDays, parse } from "date-fns";
+import { format, subDays, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
 import CompactMatchAgenda from "../components/CompactMatchAgenda";
+
+// Função utilitária para obter a data no formato 'dd/MM/yyyy' baseado em UTC
+function getDateStrUTC(offset: number = 0) {
+  const now = new Date();
+  const utcDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const target = new Date(utcDate);
+  target.setUTCDate(target.getUTCDate() + offset);
+  // Zero pad o dia e o mês:
+  const day = target.getUTCDate().toString().padStart(2, '0');
+  const month = (target.getUTCMonth() + 1).toString().padStart(2, '0');
+  const year = target.getUTCFullYear();
+  return `${day}/${month}/${year}`;
+}
 
 const Home = () => {
   const { data, isLoading, error } = useFifaData();
 
-  // Função para parsear 'dd/MM/yyyy' para Date
-  const parseDateStr = (str: string) => parse(str, "dd/MM/yyyy", new Date());
+  // Calcula datas no formato dd/MM/yyyy em UTC puro:
+  const yesterdayStr = getDateStrUTC(-1);
+  const todayStr = getDateStrUTC(0);
+  const tomorrowStr = getDateStrUTC(1);
 
-  const now = new Date();
-  const todayStr = format(now, "dd/MM/yyyy", { locale: ptBR });
-  const yesterdayStr = format(subDays(now, 1), "dd/MM/yyyy", { locale: ptBR });
-  const tomorrowStr = format(addDays(now, 1), "dd/MM/yyyy", { locale: ptBR });
-
-  // Filtra jogos do dia
+  // Filtra jogos pela data EXATA (string), nunca por objeto Date:
   const matchesYesterday = data?.matches.filter(m => m.date === yesterdayStr) || [];
   const matchesToday = data?.matches.filter(m => m.date === todayStr) || [];
   const matchesTomorrow = data?.matches.filter(m => m.date === tomorrowStr) || [];
@@ -155,3 +166,4 @@ const Home = () => {
 };
 
 export default Home;
+
