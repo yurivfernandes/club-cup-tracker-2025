@@ -1,32 +1,12 @@
+
 import React from 'react';
 import { Trophy, Calendar, MapPin, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useFifaData } from "../hooks/useFifaData";
-import CompactMatchAgenda from "../components/CompactMatchAgenda";
 import { Skeleton } from "@/components/ui/skeleton";
-
-// Função utilitária para obter a data no formato 'dd/MM/yyyy' de forma determinística
-function getDateStr(offset: number = 0) {
-  // Usamos uma data base fixa (hoje é 15/06/2025) e operamos em UTC
-  // para evitar problemas com fuso horário, garantindo consistência.
-  const baseDate = new Date(Date.UTC(2025, 5, 15)); // Mês 5 é Junho
-  baseDate.setUTCDate(baseDate.getUTCDate() + offset);
-
-  const day = baseDate.getUTCDate().toString().padStart(2, '0');
-  const month = (baseDate.getUTCMonth() + 1).toString().padStart(2, '0');
-  const year = baseDate.getUTCFullYear();
-  
-  return `${day}/${month}/${year}`;
-}
-
 
 const Home = () => {
   const { data, isLoading, error } = useFifaData();
-
-  // Calcula datas de forma segura e determinística
-  const yesterdayStr = getDateStr(-1); // "14/06/2025"
-  const todayStr = getDateStr(0);     // "15/06/2025"
-  const tomorrowStr = getDateStr(1);  // "16/06/2025"
 
   if (isLoading) {
     return (
@@ -35,11 +15,6 @@ const Home = () => {
           <Skeleton className="w-20 h-20 rounded-full mx-auto mb-6" />
           <Skeleton className="h-10 w-3/4 mx-auto mb-4" />
           <Skeleton className="h-6 w-1/2 mx-auto" />
-        </div>
-        <div className="mb-10 flex flex-col md:flex-row md:gap-5 gap-4">
-          <Skeleton className="h-[320px] flex-1 rounded-xl" />
-          <Skeleton className="h-[320px] flex-1 rounded-xl" />
-          <Skeleton className="h-[320px] flex-1 rounded-xl" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <Skeleton className="h-28 rounded-lg" />
@@ -62,10 +37,6 @@ const Home = () => {
     );
   }
 
-  const matchesYesterday = data?.matches.filter(m => m.date === yesterdayStr) || [];
-  const matchesToday = data?.matches.filter(m => m.date === todayStr) || [];
-  const matchesTomorrow = data?.matches.filter(m => m.date === tomorrowStr) || [];
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Hero Section */}
@@ -79,19 +50,6 @@ const Home = () => {
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           O maior torneio interclubes do mundo retorna com novo formato, reunindo os melhores clubes de todos os continentes nos Estados Unidos.
         </p>
-      </div>
-
-      {/* Agenda compacta: Ontem, Hoje, Amanhã */}
-      <div className="mb-10 flex flex-col md:flex-row md:gap-5 gap-0">
-        <div className="flex-1">
-          <CompactMatchAgenda title="Jogos de ontem" matches={matchesYesterday} showDate={false} />
-        </div>
-        <div className="flex-1">
-          <CompactMatchAgenda title="Jogos de hoje" matches={matchesToday} showDate={false} />
-        </div>
-        <div className="flex-1">
-          <CompactMatchAgenda title="Jogos de amanhã" matches={matchesTomorrow} showDate={false} />
-        </div>
       </div>
 
       {/* Quick Stats */}
