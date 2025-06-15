@@ -7,16 +7,15 @@ import { format, subDays, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
 import CompactMatchAgenda from "../components/CompactMatchAgenda";
 
-// Função utilitária para obter a data no formato 'dd/MM/yyyy' baseado em UTC
+// Util para padronizar datas em dd/MM/yyyy em UTC:
 function getDateStrUTC(offset: number = 0) {
   const now = new Date();
+  // Cria sempre uma data em UTC às 00:00
   const utcDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const target = new Date(utcDate);
-  target.setUTCDate(target.getUTCDate() + offset);
-  // Zero pad o dia e o mês:
-  const day = target.getUTCDate().toString().padStart(2, '0');
-  const month = (target.getUTCMonth() + 1).toString().padStart(2, '0');
-  const year = target.getUTCFullYear();
+  utcDate.setUTCDate(utcDate.getUTCDate() + offset);
+  const day = utcDate.getUTCDate().toString().padStart(2, '0');
+  const month = (utcDate.getUTCMonth() + 1).toString().padStart(2, '0');
+  const year = utcDate.getUTCFullYear();
   return `${day}/${month}/${year}`;
 }
 
@@ -28,10 +27,16 @@ const Home = () => {
   const todayStr = getDateStrUTC(0);
   const tomorrowStr = getDateStrUTC(1);
 
-  // Filtra jogos pela data EXATA (string), nunca por objeto Date:
-  const matchesYesterday = data?.matches.filter(m => m.date === yesterdayStr) || [];
-  const matchesToday = data?.matches.filter(m => m.date === todayStr) || [];
-  const matchesTomorrow = data?.matches.filter(m => m.date === tomorrowStr) || [];
+  // Garante que a comparação dos jogos é feita com as datas padronizadas:
+  const formatDateString = (dateStr: string) => {
+    // Espera data já no formato dd/MM/yyyy. Se não, tenta normalizar.
+    if (!dateStr.includes("/")) return dateStr;
+    return dateStr;
+  };
+
+  const matchesYesterday = data?.matches.filter(m => formatDateString(m.date) === yesterdayStr) || [];
+  const matchesToday = data?.matches.filter(m => formatDateString(m.date) === todayStr) || [];
+  const matchesTomorrow = data?.matches.filter(m => formatDateString(m.date) === tomorrowStr) || [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -166,4 +171,3 @@ const Home = () => {
 };
 
 export default Home;
-

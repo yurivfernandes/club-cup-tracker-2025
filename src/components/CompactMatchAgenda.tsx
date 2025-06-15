@@ -44,7 +44,7 @@ export const CompactMatchAgenda: React.FC<CompactMatchAgendaProps> = ({
   const canGoPrev = page > 0;
   const canGoNext = page < totalPages - 1;
 
-  // Reset pagination if matches change (novo dia, etc):
+  // Reset paginação ao mudar jogos:
   React.useEffect(() => {
     setPage(0);
   }, [matches]);
@@ -86,9 +86,6 @@ export const CompactMatchAgenda: React.FC<CompactMatchAgendaProps> = ({
           {paginatedMatches.map((match) => (
             <li key={match.id} className="flex items-center justify-between gap-2 py-4">
               <div className="flex items-center gap-2 flex-1 min-w-0">
-                <span className="w-10 text-right font-bold text-gray-700 truncate">
-                  {match.homeTeam.slice(0, 3).toUpperCase()}
-                </span>
                 <Avatar className="h-8 w-8 mx-1">
                   <AvatarImage
                     src={`/logos/${match.homeTeam.toLowerCase().replace(/[\s.]/g, "_")}.png`}
@@ -98,6 +95,9 @@ export const CompactMatchAgenda: React.FC<CompactMatchAgendaProps> = ({
                     {match.homeTeam.slice(0, 3).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+                <span className="font-bold text-gray-700 truncate max-w-[112px]" title={match.homeTeam}>
+                  {match.homeTeam}
+                </span>
               </div>
               <div className="flex flex-col items-center min-w-[64px] px-1">
                 {getTimeOrScore(match)}
@@ -107,6 +107,9 @@ export const CompactMatchAgenda: React.FC<CompactMatchAgendaProps> = ({
                 <span className="text-[11px] text-gray-500">Copa do Mundo de Clubes da FIFA™</span>
               </div>
               <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
+                <span className="font-bold text-gray-700 truncate max-w-[112px] text-right" title={match.awayTeam}>
+                  {match.awayTeam}
+                </span>
                 <Avatar className="h-8 w-8 mx-1">
                   <AvatarImage
                     src={`/logos/${match.awayTeam.toLowerCase().replace(/[\s.]/g, "_")}.png`}
@@ -116,9 +119,6 @@ export const CompactMatchAgenda: React.FC<CompactMatchAgendaProps> = ({
                     {match.awayTeam.slice(0, 3).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="w-10 text-left font-bold text-gray-700 truncate">
-                  {match.awayTeam.slice(0, 3).toUpperCase()}
-                </span>
               </div>
             </li>
           ))}
@@ -129,4 +129,3 @@ export const CompactMatchAgenda: React.FC<CompactMatchAgendaProps> = ({
 };
 
 export default CompactMatchAgenda;
-
