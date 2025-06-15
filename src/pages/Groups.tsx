@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, MapPin, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -36,9 +35,27 @@ const Groups = () => {
 
   const getGroupMatches = (groupIndex: number): Match[] => {
     if (!fifaData) return [];
-    return fifaData.matches.filter(match => 
-      fifaData.groups[groupIndex].teams.some(team => team.name === match.homeTeam || team.name === match.awayTeam)
+
+    // Coleta nomes dos times deste grupo
+    const groupTeamNames = fifaData.groups[groupIndex].teams.map(team => team.name);
+
+    // Log para depuração
+    console.log(
+      `--- Matches for group ${groupLabels[groupIndex]}: looking for teams:`,
+      groupTeamNames
     );
+
+    const groupMatches = fifaData.matches.filter(match =>
+      groupTeamNames.includes(match.homeTeam) && groupTeamNames.includes(match.awayTeam)
+    );
+
+    // Mais log para entender o resultado
+    console.log(
+      `Found ${groupMatches.length} matches for group ${groupLabels[groupIndex]}:`,
+      groupMatches
+    );
+
+    return groupMatches;
   };
 
   const calculateStandings = (groupIndex: number) => {
