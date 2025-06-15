@@ -1,12 +1,12 @@
 name = "club-cup-tracker-2025"
 compatibility_date = "2024-03-20"
+main = "./dist/index.html"
 
 [site]
 bucket = "./dist"
 pages_build_output_dir = "dist"
-zone_id = ""
 
-[site]
-bucket = "./dist"
+[build]
+command = "npm run build"
 entry-point = "workers-site"
 pages_build_output_dir = "dist"
